@@ -25,14 +25,22 @@ router.get("/", auth, async (req, res) => {
 // @access Private
 
 router.post("/", auth, async (req, res) => {
+    const { id, user_type } = req.user;
     const { car_id, issue_date, return_date } = req.body;
+    if (issue_date > return_date) {
+        return res
+            .status(403)
+            .json([{ msg: "Issue date should be greater than return date" }]);
+    }
     try {
         const car = await Car.findById(car_id);
         if (!car) return res.status(404).json([{ msg: "Car not found" }]);
         let bookings = await Booking.find({
             car_id,
-            issue_date: { $gte: issue_date },
-            return_date: { $lte: return_date },
+            $and: [
+                { issue_date: { $gte: issue_date } },
+                { return_date: { $lte: return_date } },
+            ],
         });
         if (bookings.length > 0)
             return res
@@ -41,6 +49,7 @@ router.post("/", auth, async (req, res) => {
         car.booked = true;
         car.num_bookings += 1;
         let booking = new Booking({
+            customer_id: id,
             car_id,
             issue_date,
             return_date,
@@ -54,12 +63,12 @@ router.post("/", auth, async (req, res) => {
     }
 });
 
-// @route   DELETE api/cars/:id
-// @desc    Delete a Car
+// @route   DELETE api/bookins/:id
+// @desc    Delete a booking
 // @access  Private
 
 router.delete("/:booking_id", auth, async (req, res) => {
-    const { id, userType } = req.user;
+    const { id, user_type } = req.user;
 
     try {
         const booking = await Booking.findById(req.params.booking_id);
@@ -70,7 +79,7 @@ router.delete("/:booking_id", auth, async (req, res) => {
         if (booking.customer_id.toString() !== id) {
             return res.status(401).json({ msg: "User not authorized" });
         }
-        const car = await Car.findById(car_id);
+        const car = await Car.findById(booking.car_id);
         car.num_bookings -= 1;
         if (car.num_bookings === 0) car.booked = false;
         await car.save();
@@ -90,7 +99,7 @@ router.delete("/:booking_id", auth, async (req, res) => {
 // @access  Private
 
 router.put("/:booking_id", auth, async (req, res) => {
-    const { id, userType } = req.user;
+    const { id, user_type } = req.user;
 
     try {
         let booking = await Booking.findById(req.params.booking_id);
@@ -101,8 +110,10 @@ router.put("/:booking_id", auth, async (req, res) => {
         const { issue_date, return_date } = req.body;
         let bookings = await Booking.find({
             car_id: booking.car_id,
-            issue_date: { $gte: issue_date },
-            return_date: { $lte: return_date },
+            $and: [
+                { issue_date: { $gte: issue_date } },
+                { return_date: { $lte: return_date } },
+            ],
         });
         if (bookings.length > 0)
             return res

@@ -24,8 +24,9 @@ router.get("/", async (req, res) => {
 
 router.post("/", auth, async (req, res) => {
     // Check if the user adding car is an admin
-    const { id, userType } = req.user;
-    if (userType !== "admin")
+    const { id, user_type } = req.user;
+    console.log(user_type);
+    if (user_type !== "admin")
         return res.status(401).json({
             errors: [{ msg: "Not Authorised to Access this area." }],
         });
@@ -52,8 +53,8 @@ router.post("/", auth, async (req, res) => {
 
 router.delete("/:car_id", auth, async (req, res) => {
     // Check if the user deleting car is an admin
-    const { id, userType } = req.user;
-    if (userType !== "admin")
+    const { id, user_type } = req.user;
+    if (user_type !== "admin")
         return res.status(401).json({
             errors: [{ msg: "User not authorized" }],
         });
@@ -80,8 +81,8 @@ router.delete("/:car_id", auth, async (req, res) => {
 
 router.put("/:car_id", auth, async (req, res) => {
     // Check if the user editing Car is an admin
-    const { id, userType } = req.user;
-    if (userType !== "admin")
+    const { id, user_type } = req.user;
+    if (user_type !== "admin")
         return res.status(401).json({
             errors: [{ msg: "User not authorized" }],
         });
@@ -98,6 +99,7 @@ router.put("/:car_id", auth, async (req, res) => {
         car.car_model = car_model;
         car.capacity = capacity;
         car.rent_per_day = rent_per_day;
+
         car = await car.save();
         res.json(car);
     } catch (err) {
@@ -123,15 +125,17 @@ router.get("/filter", async (req, res) => {
     if (rent_per_day) query.rent_per_day = rent_per_day;
     try {
         let cars = await Car.find({ query });
-        cars = cars.filter(car => {
+        cars = cars.filter(async (car) => {
             let bookings = await Booking.find({
-                  car_id: car.id,
-                 issue_date: {$gte: issue_date},
-                 return_date: {$lte: return_date 
-            }});
+                car_id: car.id,
+                $and: [
+                    { issue_date: { $gte: issue_date } },
+                    { return_date: { $lte: return_date } },
+                ],
+            });
             return bookings.length > 0;
-        })
-     } catch (err) {
+        });
+    } catch (err) {
         console.error(err.message);
         res.status(500).json([{ msg: "Server Error" }]);
     }

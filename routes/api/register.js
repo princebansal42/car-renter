@@ -24,7 +24,7 @@ router.get("/", async (req, res) => {
 // @access Public
 
 router.post("/", async (req, res) => {
-    const { name, email, password, user_type, address } = req.body;
+    const { name, email, password, user_type, address, phone } = req.body;
 
     try {
         // Check if user already exist
@@ -41,6 +41,7 @@ router.post("/", async (req, res) => {
             password,
             user_type,
             address,
+            phone,
         });
 
         // Encrypt Password
