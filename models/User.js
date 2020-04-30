@@ -27,6 +27,11 @@ const userSchema = new mongoose.Schema(
             set: v => v.toLowerCase(),
             enum: ["admin", "customer"],
             required: true
+        },
+        address: {
+            type: String,
+            trim: true,
+            required: true
         }
     },
     { timestamps: true }
