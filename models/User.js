@@ -23,18 +23,19 @@ const userSchema = new mongoose.Schema(
         },
         user_type: {
             type: String,
-            get: v => v.toLowerCase(),
-            set: v => v.toLowerCase(),
+            get: (v) => v.toLowerCase(),
+            set: (v) => v.toLowerCase(),
             enum: ["admin", "customer"],
-            required: true
+            required: true,
         },
         address: {
             type: String,
             trim: true,
-            required: true
-        }
+            required: true,
+        },
     },
     { timestamps: true }
 );
 
-const 
+const User = mongoose.model("User", userSchema);
+module.exports = User;
