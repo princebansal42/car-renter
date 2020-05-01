@@ -110,7 +110,7 @@ const editCar = async (req, res) => {
 
 // @route   GET api/cars/fitler
 // @desc    Filter Cars
-// @access  Private
+// @access  Public
 const filterCars = async (req, res) => {
     const {
         car_model,
