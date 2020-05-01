@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
-const config = require("config");
-const db_url = config.get("mongoURI");
+const db_url = process.env.MONGODB_URI || "mongodb://localhost/car-renter-app";
 
 const connectDB = async () => {
     try {
