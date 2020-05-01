@@ -4,8 +4,9 @@ const carSchema = new mongoose.Schema(
     {
         vehicle_number: {
             type: String,
-            trim: true,
+            unique: true,
             required: true,
+            dropDups: true,
         },
         car_model: {
             type: String,
