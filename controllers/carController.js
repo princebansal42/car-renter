@@ -137,7 +137,7 @@ const filterCars = async (req, res) => {
                         { return_date: { $lte: return_date } },
                     ],
                 });
-                return bookings.length > 0;
+                return bookings.length === 0;
             });
             console.log(cars);
         }
