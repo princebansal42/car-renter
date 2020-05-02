@@ -120,12 +120,15 @@ const filterCars = async (req, res) => {
         return_date,
     } = req.query;
     const query = {};
+    console.log(req.query);
     if (car_model) query.car_model = car_model;
     if (capacity) query.capacity = { $gte: capacity };
     if (rent_per_day) query.rent_per_day = { $lte: rent_per_day };
     try {
         let cars = await Car.find({ query });
+        console.log(cars);
         if (issue_date && return_date) {
+            console.log("hello");
             cars = cars.filter(async (car) => {
                 let bookings = await Booking.find({
                     car_id: car.id,
@@ -136,6 +139,7 @@ const filterCars = async (req, res) => {
                 });
                 return bookings.length > 0;
             });
+            console.log(cars);
         }
         return res.json(cars);
     } catch (err) {
