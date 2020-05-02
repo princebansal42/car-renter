@@ -127,21 +127,33 @@ const filterCars = async (req, res) => {
     try {
         let cars = await Car.find(query);
         console.log(cars);
+        let filteredCars = [];
         if (issue_date && return_date) {
             console.log("hello");
-            cars = cars.filter(async (car) => {
+            for (let car in cars) {
                 let bookings = await Booking.find({
                     car_id: car.id,
                     $and: [
-                        { issue_date: { $gte: issue_date } },
-                        { return_date: { $lte: return_date } },
+                        { issue_date: { $lte: return_date } },
+                        { return_date: { $gte: issue_date } },
                     ],
                 });
-                return bookings.length === 0;
-            });
-            console.log(cars);
+                if (bookings.length === 0)
+                    filteredCars = [...filteredCars, car];
+            }
+            // cars = cars.filter(async (car) => {
+            //     let bookings = await Booking.find({
+            //         car_id: car.id,
+            //         $and: [
+            //             { issue_date: { $gte: issue_date } },
+            //             { return_date: { $lte: return_date } },
+            //         ],
+            //     });
+            //     return bookings.length === 0;
+            // });
+            // console.log(cars);
         }
-        return res.json(cars);
+        return res.json(filteredCars);
     } catch (err) {
         console.error(err.message);
         res.status(500).json([{ msg: "Server Error" }]);
