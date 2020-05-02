@@ -67,46 +67,6 @@ const addBooking = async (req, res) => {
 
 const deleteBooking = async (req, res) => {
     const { id, user_type } = req.user;
-    async (req, res) => {
-        const { id, user_type } = req.user;
-        const { car_id, issue_date, return_date } = req.body;
-        if (issue_date > return_date) {
-            return res
-                .status(403)
-                .json([
-                    { msg: "Issue date should be greater than return date" },
-                ]);
-        }
-        try {
-            const car = await Car.findById(car_id);
-            if (!car) return res.status(404).json([{ msg: "Car not found" }]);
-            let bookings = await Booking.find({
-                car_id,
-                $and: [
-                    { issue_date: { $gte: issue_date } },
-                    { return_date: { $lte: return_date } },
-                ],
-            });
-            if (bookings.length > 0)
-                return res
-                    .status(403)
-                    .json([{ msg: "Booking cannot be done. Slots Full" }]);
-            car.booked = true;
-            car.num_bookings += 1;
-            let booking = new Booking({
-                customer_id: id,
-                car_id,
-                issue_date,
-                return_date,
-            });
-            await car.save();
-            booking = await booking.save();
-            return res.json(booking);
-        } catch (err) {
-            console.error(err.message);
-            return res.status(500).json([{ msg: "Server Error" }]);
-        }
-    };
     try {
         const booking = await Booking.findById(req.params.booking_id);
 
