@@ -152,7 +152,7 @@ const filterCars = async (req, res) => {
             //     return bookings.length === 0;
             // });
             // console.log(cars);
-        }
+        } else return res.json(cars);
         return res.json(filteredCars);
     } catch (err) {
         console.error(err.message);
