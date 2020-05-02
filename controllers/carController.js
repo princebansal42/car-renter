@@ -130,7 +130,7 @@ const filterCars = async (req, res) => {
         let filteredCars = [];
         if (issue_date && return_date) {
             console.log("hello");
-            for (let car in cars) {
+            for (let car of cars) {
                 let bookings = await Booking.find({
                     car_id: car.id,
                     $and: [
