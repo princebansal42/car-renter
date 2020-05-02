@@ -121,8 +121,8 @@ const filterCars = async (req, res) => {
     } = req.query;
     const query = {};
     if (car_model) query.car_model = car_model;
-    if (capacity) query.capacity = capacity;
-    if (rent_per_day) query.rent_per_day = rent_per_day;
+    if (capacity) query.capacity = { $gte: capacity };
+    if (rent_per_day) query.rent_per_day = { $lte: rent_per_day };
     try {
         let cars = await Car.find({ query });
         if (issue_date && return_date) {
