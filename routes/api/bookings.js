@@ -21,7 +21,7 @@ router.post("/", auth, bookingController.addBooking);
 // @desc    Delete a booking
 // @access  Private
 
-router.delete("/:booking_id", bookingController.deleteBooking);
+router.delete("/:booking_id", auth, bookingController.deleteBooking);
 
 // @route   PUT api/bookings/:id
 // @desc    Edit a Booking
