@@ -1,8 +1,4 @@
 const router = require("express").Router();
-const User = require("../../models/User");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const config = require("config");
 const auth = require("../../middleware/auth");
 const { loginController } = require("../../controllers");
 // @route   GET api/login

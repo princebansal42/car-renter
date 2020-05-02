@@ -1,7 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const Car = require("../../models/Car");
-const Booking = require("../../models/Booking");
 const { bookingController } = require("../../controllers");
 const auth = require("../../middleware/auth");
 

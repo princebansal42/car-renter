@@ -36,8 +36,8 @@ const addBooking = async (req, res) => {
         let bookings = await Booking.find({
             car_id,
             $and: [
-                { issue_date: { $gte: issue_date } },
-                { return_date: { $lte: return_date } },
+                { issue_date: { $lte: return_date } },
+                { return_date: { $gte: issue_date } },
             ],
         });
         if (bookings.length > 0)
@@ -108,8 +108,8 @@ const editBooking = async (req, res) => {
         let bookings = await Booking.find({
             car_id: booking.car_id,
             $and: [
-                { issue_date: { $gte: issue_date } },
-                { return_date: { $lte: return_date } },
+                { issue_date: { $lte: return_date } },
+                { return_date: { $gte: issue_date } },
             ],
         });
         if (bookings.length > 0)
