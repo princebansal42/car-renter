@@ -56,15 +56,11 @@ const register = async (req, res) => {
         };
 
         // return jsonwebtoken
-        jwt.sign(
-            payload,
-            config.get("jwtSecretKey"),
-            { expiresIn: 360000 },
-            (err, token) => {
-                if (err) throw err;
-                return res.json({ token });
-            }
-        );
+        const jwtSecretKey = process.env.JWT_SEC;
+        jwt.sign(payload, jwtSecretKey, { expiresIn: 360000 }, (err, token) => {
+            if (err) throw err;
+            return res.json({ token });
+        });
     } catch (err) {
         console.error(err.message);
         // 500 - Server Error

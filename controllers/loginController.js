@@ -45,9 +45,10 @@ const login = async (req, res) => {
                 user_type,
             },
         };
+        const jwtSecretKey = process.env.JWT_SEC;
         jwt.sign(
             payload,
-            config.get("jwtSecretKey"),
+            jwtSecretKey,
             {
                 expiresIn: 360000,
             },
